@@ -21,6 +21,10 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ```{r}
 #install.packages("jpeg")
+#install.packages("caret")
+library(caret)
+library(knitr)
+library(gmodels)
 library(jpeg)
 library(e1071)
 library(kernlab)
@@ -37,7 +41,7 @@ head(data)
 
 # Train SVR model
 model <- ksvm(Class ~ X1+X2+X3, data = data, kernel = "rbfdot", C = 1)
-}
+
 
 #support_vectors <- model_svm$SV
 #coefficients <- model_svm$coefs
@@ -95,14 +99,24 @@ prop.table(table(agreement))
 ```{r}
 sms_results <- read.csv("sms_results.csv", stringsAsFactors = TRUE)
 head(sms_results)
-head(subset(sms_results, prob_spam > 0.40 & prob_spam < 0.60))
-head(subset(sms_results, actual_type != predict_type))
+head(subset(sms_results, prob_spam > 0.40 & prob_spam < 0.60)) # displays errors made with prob ~ 0.5
+head(subset(sms_results, actual_type != predict_type)) # displays errors made with prob ~ 1
 
 ```
 
 ```{r echo=FALSE}
-library(knitr)
+#library(knitr)
 include_graphics("ConfusionMatrix.jpg")
+table(sms_results$actual_type, sms_results$predict_type) # prints a Confusion Matrix
+
+#library(gmodels)
+CrossTable(sms_results$actual_type, sms_results$predict_type)
 ```
+```{r}
+#library(caret)
+include_graphics("caret.jpg")
+confusionMatrix(sms_results$predict_type,sms_results$actual_type, positive = "spam") # note postive = spam
+
+
 
 ```

@@ -14,17 +14,55 @@ knitr::opts_chunk$set(echo = TRUE)
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+#library(caret)
+#library(knitr)
+#library(gmodels)
+#library(jpeg)
+library(e1071)
+library(kernlab)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+url <- "https://raw.githubusercontent.com/derekriceX/SVM_Learning/main/RSM_train.csv" # Paste the URL you copied here
+train <- read.csv(url)
+train$Class <- as.factor(train$Class)
+
+url <- "https://raw.githubusercontent.com/derekriceX/SVM_Learning/main/RSM_test.csv" # Paste the URL you copied 
+test <- read.csv(url)
+test$Class <- as.factor(test$Class)
+
+dim(train)
+
+dim(test)
+
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+model <- ksvm(Class ~ A+B+C+D+E+F, data = train, kernel = "rbfdot", C = 10)
+
+
+
+
+predict <- predict(model, train)
+head(predict)
+table(predict, train$Class)
+
+agreement <- predict == train$Class
+table(agreement)
+prop.table(table(agreement))
+```
+
+```{r}
+predict <- predict(model, test)
+head(predict)
+table(predict, test$Class)
+
+agreement <- predict == test$Class
+table(agreement)
+prop.table(table(agreement))
+
+```
