@@ -24,12 +24,11 @@ library(scatterplot3d)
 
 # Generate some synthetic data
 set.seed(123)
-x1 <- seq(0, 5, by = 0.1)
-x2 <- seq(0, 5, by = 0.1)
-y <- sin(x1) + rnorm(length(x1)) + cos(x2)
+x <- seq(0, 5, by = 0.1)
 
+y <- sin(x1) + rnorm(length(x1)) 
 
-scatterplot3d(x1, x2, y)
+plot(x, y)
 
 
 
@@ -37,7 +36,7 @@ scatterplot3d(x1, x2, y)
 data <- data.frame(x1 = x1, x2=x2,y = y)
 
 # Train SVR model
-model_svm <- svm(y ~ x1+x2, data = data, type = "eps-regression", kernel = "radial")
+model_svm <- svm(y ~ x, data = data, type = "eps-regression", kernel = "radial")
 
 support_vectors <- model_svm$SV
 coefficients <- model_svm$coefs
@@ -57,8 +56,7 @@ predictions <- predict(model_svm, data)
 predict_lm <- predict(model_lm,data)
 
 # Plot the results
-scatterplot3d(x1, x2, y)
-#plot(x, y, main="Support Vector vs. Least Squares Regression", col="blue", pch=16)
+plot(x, y, main="Support Vector vs. Least Squares Regression", col="blue", pch=16)
 lines(x, predictions, col="red", lwd=2)
 lines(x,predict_lm,col="green",lwd=4)
 legend("topright", legend=c("Actual Data", "SVR Prediction","Least Squares"), col=c("blue", "red","green"), lwd=2, pch=16, bty="n")
